@@ -1,21 +1,25 @@
 const express = require('express')
 const app = express()
-// const bodyParser= require("body-parser");
-let multer = require('multer');
-let upload = multer();
+const bodyParser= require("body-parser");
+const cors = require('cors');
+
+// let multer = require('multer');
+// let upload = multer();
 const port = 3000
 
-
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(cors());
+app.options('*', cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 // app.use(upload.array()); 
 
 app.get('/', (req, res) => res.send('Hello World!'))
-app.post('/login', upload.none(), function (req, res) {
+app.post('/login', function (req, res) {
+  console.log(req.body)
   var user = req.body.user
   var password = req.body.password
   var dataresponse = {}
-    if(user && password && user == "admin" && password == "123"){
+    if(user && password && user == "admin@123" && password == "123"){
       dataresponse = {
         status : 'ok'
       }
