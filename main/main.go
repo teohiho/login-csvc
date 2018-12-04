@@ -19,11 +19,11 @@ func login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	if username == "jon" && password == "shhh!" {
+	if username == "duong@gmail.com" && password == "duong" {
 
 	// Set custom claims
 		claims := &JwtCustomClaims{
-			"hongxuan",
+			"duong",
 			true,
 			jwt.StandardClaims{
 				ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
@@ -55,7 +55,7 @@ func login(c echo.Context) error {
 func testlogin(c echo.Context) error {
 	// Set custom claims
 	claims := &JwtCustomClaims{
-		"hongxuan",
+		"duong",
 		true,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
@@ -87,7 +87,7 @@ func check(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
 	name := claims.Name
-	if name == "hongxuan" {
+	if name == "duong" {
 		return c.JSON(http.StatusOK, echo.Map{
 			"status": "ok",
 		})
@@ -107,8 +107,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:8080"},
+		AllowOrigins: []string{"http://localhost:3000"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowCredentials: true,
 	  }))
 	// Login route
 	e.POST("/login", login)
