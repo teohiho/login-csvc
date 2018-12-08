@@ -53,16 +53,7 @@ func login(c echo.Context) error {
 
 
 	for _, value := range data {
-		fmt.Println("username: ", username)
-		fmt.Println("username: ", value.Username)
-		fmt.Println("username: ", password)
-		fmt.Println("username: ", value.Password)
-		fmt.Println("============================>")
 		if username == value.Username && password == value.Password {
-			fmt.Println("username: ", username)
-			fmt.Println("username: ", value.Username)
-			fmt.Println("username: ", password)
-			fmt.Println("username: ", value.Password)
 			claims := &JwtCustomClaims{
 				username,
 				true,
@@ -96,8 +87,9 @@ func login(c echo.Context) error {
 } 
 func testlogin(c echo.Context) error {
 	// Set custom claims
+	
 	claims := &JwtCustomClaims{
-		"hongxuan",
+		"duong",
 		true,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
@@ -126,13 +118,36 @@ func testlogin(c echo.Context) error {
 }
 
 func check(c echo.Context) error {
+
+	resp, _ := http.Get("http://localhost:5500/user")
+
+	defer resp.Body.Close()
+	
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+			fmt.Printf("%s", err)
+			os.Exit(1)
+	}
+
+	fmt.Printf("%s\n", string(contents))
+	var data = []User{}
+	_ = json.Unmarshal(contents, &data)
+	
+
+
+
+
+
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
 	name := claims.Name
-	if name == "hongxuan" {
-		return c.JSON(http.StatusOK, echo.Map{
-			"status": "ok",
-		})
+	for _, value := range data {
+		if name == value.Username {
+			return c.JSON(http.StatusOK, echo.Map{
+				"status": "ok",
+				"role": value.IDRole,
+			})
+		}
 	}
 
 	return c.JSON(http.StatusBadRequest, echo.Map{
@@ -150,11 +165,11 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:8080"},
+		AllowOrigins: []string{"http://localhost:3000"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
 		}))
-		
+
 	// Login route
 	e.POST("/login", login)
 	e.GET("/testlogin", testlogin)
