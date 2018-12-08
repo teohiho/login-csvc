@@ -1,12 +1,15 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/dgrijalva/jwt-go"
 	"time"
+	"io/ioutil"
 	"net/http"
+	"encoding/json"
+	"os"
 )
 
 type JwtCustomClaims struct {
@@ -15,40 +18,79 @@ type JwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
+	
+type User struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Fullname string `json:"fullname"`
+	Avatar   string `json:"avatar"`
+	Phone    string `json:"phone"`
+	IDDonvi  string `json:"id_donvi"`
+	IDRole   string `json:"id_role"`
+}
+
+
+
 func login(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	if username == "jon" && password == "shhh!" {
+	resp, _ := http.Get("http://localhost:5500/user")
 
-	// Set custom claims
-		claims := &JwtCustomClaims{
-			"hongxuan",
-			true,
-			jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
-			},
+	defer resp.Body.Close()
+	
+	contents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+			fmt.Printf("%s", err)
+			os.Exit(1)
+	}
+
+	fmt.Printf("%s\n", string(contents))
+	var data = []User{}
+	_ = json.Unmarshal(contents, &data)
+	
+
+
+	for _, value := range data {
+		fmt.Println("username: ", username)
+		fmt.Println("username: ", value.Username)
+		fmt.Println("username: ", password)
+		fmt.Println("username: ", value.Password)
+		fmt.Println("============================>")
+		if username == value.Username && password == value.Password {
+			fmt.Println("username: ", username)
+			fmt.Println("username: ", value.Username)
+			fmt.Println("username: ", password)
+			fmt.Println("username: ", value.Password)
+			claims := &JwtCustomClaims{
+				username,
+				true,
+				jwt.StandardClaims{
+					ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+				},
+			}
+	
+			// Create token with claims
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	
+			// Generate encoded token and send it as response.
+			t, err := token.SignedString([]byte("secret"))
+			if err != nil {
+				return err
+			}
+	
+			cookie := new(http.Cookie)
+			cookie.Name = "_token_jwt"
+			cookie.Value = t
+			cookie.Expires = time.Now().Add(24 * time.Hour)
+			c.SetCookie(cookie)
+	
+	
+			return c.JSON(http.StatusOK, echo.Map{
+				"token": t,
+			})
 		}
-
-		// Create token with claims
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-		// Generate encoded token and send it as response.
-		t, err := token.SignedString([]byte("secret"))
-		if err != nil {
-			return err
-		}
-
-		cookie := new(http.Cookie)
-		cookie.Name = "_token_jwt"
-		cookie.Value = t
-		cookie.Expires = time.Now().Add(24 * time.Hour)
-		c.SetCookie(cookie)
-
-
-		return c.JSON(http.StatusOK, echo.Map{
-			"token": t,
-		})
 	}
 	return echo.ErrUnauthorized
 } 
@@ -106,10 +148,13 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:8080"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	  }))
+		AllowCredentials: true,
+		}))
+		
 	// Login route
 	e.POST("/login", login)
 	e.GET("/testlogin", testlogin)
@@ -132,7 +177,7 @@ func main() {
 	adm.GET("/hello", check)
 
 
-
+	
 	// obj.GET("/about/:lang", about.GetAbout())
 
 	e.Logger.Fatal(e.Start(":5000"))
