@@ -1,0 +1,94 @@
+{
+  "user": [
+    {
+      "id": "1",
+      "username": "Admin",
+      "password": "123456",
+      "fullname": "Administrator",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "",
+      "id_role": "1"
+    },
+    {
+      "id": "2",
+      "username": "abc1234",
+      "password": "123456",
+      "fullname": "Hiền Hồ",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "1",
+      "id_role": "2"
+    },
+    {
+      "id": "3",
+      "username": "thuhien1234",
+      "password": "123456",
+      "fullname": "Hồ Thị Thu Hiền",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "",
+      "id_role": "1"
+    },
+    {
+      "id": "4",
+      "username": "user1",
+      "password": "123456",
+      "fullname": "Thu Hiền",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "3",
+      "id_role": "3"
+    },
+    {
+      "id": "5",
+      "username": "user2",
+      "password": "123456",
+      "fullname": "Hiền Kute",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "5",
+      "id_role": "2"
+    },
+    {
+      "id": "6",
+      "username": "user2",
+      "password": "123456",
+      "fullname": "Teo Teo",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "6",
+      "id_role": "2"
+    },
+    {
+      "id": "7",
+      "username": "user2",
+      "password": "123456",
+      "fullname": "Teo Teo Teo",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "5",
+      "id_role": "2"
+    },
+    {
+      "id": "8",
+      "username": "user2",
+      "password": "123456",
+      "fullname": "Thu Hien Ho",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "5",
+      "id_role": "2"
+    },
+    {
+      "id": "9",
+      "username": "user2",
+      "password": "123456",
+      "fullname": "thuhien",
+      "avatar": "teoteoteo.png",
+      "phone": "01222088643",
+      "id_donvi": "5",
+      "id_role": "2"
+    }
+  ]
+}
