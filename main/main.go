@@ -77,7 +77,6 @@ func login(c echo.Context) error {
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
 	
-	
 			return c.JSON(http.StatusOK, echo.Map{
 				"token": t,
 			})
@@ -110,7 +109,6 @@ func testlogin(c echo.Context) error {
 	cookie.Value = t
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	c.SetCookie(cookie)
-
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": t,
@@ -146,6 +144,10 @@ func check(c echo.Context) error {
 			return c.JSON(http.StatusOK, echo.Map{
 				"status": "ok",
 				"role": value.IDRole,
+				"id": value.ID,
+				"Name": value.Fullname,
+				"don vi": value.IDDonvi,
+				"phone": value.Phone,
 			})
 		}
 	}
