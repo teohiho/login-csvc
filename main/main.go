@@ -20,14 +20,14 @@ type JwtCustomClaims struct {
 
 	
 type User struct {
-	ID       string `json:"id"`
+	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Fullname string `json:"fullname"`
 	Avatar   string `json:"avatar"`
 	Phone    string `json:"phone"`
-	IDDonvi  string `json:"id_donvi"`
-	IDRole   string `json:"id_role"`
+	IDDonvi  int    `json:"id_donvi"`
+	IDRole   int    `json:"id_role"`
 }
 
 
@@ -46,12 +46,11 @@ func login(c echo.Context) error {
 			os.Exit(1)
 	}
 
-	fmt.Printf("%s\n", string(contents))
 	var data = []User{}
 	_ = json.Unmarshal(contents, &data)
 	
 
-
+	fmt.Println(username, password)
 	for _, value := range data {
 		if username == value.Username && password == value.Password {
 			claims := &JwtCustomClaims{
@@ -74,6 +73,7 @@ func login(c echo.Context) error {
 			cookie := new(http.Cookie)
 			cookie.Name = "_token_jwt"
 			cookie.Value = t
+			cookie.Domain = ""
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
 	
@@ -88,7 +88,7 @@ func testlogin(c echo.Context) error {
 	// Set custom claims
 	
 	claims := &JwtCustomClaims{
-		"duong",
+		"Admin123",
 		true,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
@@ -107,6 +107,7 @@ func testlogin(c echo.Context) error {
 	cookie := new(http.Cookie)
 	cookie.Name = "_token_jwt"
 	cookie.Value = t
+	cookie.Domain = ""
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	c.SetCookie(cookie)
 
@@ -144,10 +145,6 @@ func check(c echo.Context) error {
 			return c.JSON(http.StatusOK, echo.Map{
 				"status": "ok",
 				"role": value.IDRole,
-				"id": value.ID,
-				"Name": value.Fullname,
-				"don vi": value.IDDonvi,
-				"phone": value.Phone,
 			})
 		}
 	}
@@ -167,19 +164,19 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: []string{"http://csvc.com"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 		AllowCredentials: true,
 		}))
 
 	// Login route
-	e.POST("/login", login)
-	e.GET("/testlogin", testlogin)
+	e.POST("api/login", login)
+	e.GET("api/testlogin", testlogin)
 	// Unauthenticated route
 	// e.GET("/", accessible)
 
 	// Restricted group
-	adm := e.Group("/admin")
+	adm := e.Group("api/admin")
 	// obj := e.Group("/obj")
 
 	// Configure middleware with the custom claims type
