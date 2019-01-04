@@ -81,10 +81,25 @@ func login(c echo.Context) error {
 			return c.JSON(http.StatusOK, echo.Map{
 				"token": t,
 			})
+
 		}
 	}
 	return echo.ErrUnauthorized
-} 
+}
+
+
+func logout(c echo.Context) error {
+	cookie := new(http.Cookie)
+	cookie.Name = "_token_jwt"
+	cookie.Value = ""
+	cookie.Domain = ""
+	cookie.Expires = time.Unix(0, 0)
+	c.SetCookie(cookie)
+	return  c.Redirect(302, "/")
+	// return c.JSON(http.StatusOK, echo.Map{
+	// 		"token": "ok",
+	// 	})
+}
 func testlogin(c echo.Context) error {
 	// Set custom claims
 	
@@ -111,7 +126,7 @@ func testlogin(c echo.Context) error {
 	cookie.Domain = ""
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	c.SetCookie(cookie)
-
+	// return c.Redirect(302, "/")
 	return c.JSON(http.StatusOK, echo.Map{
 		"token": t,
 	})
@@ -172,7 +187,7 @@ func main() {
 	e.GET("api/testlogin", testlogin)
 	// Unauthenticated route
 	// e.GET("/", accessible)
-
+	e.GET("api/logout", logout)
 	// Restricted group
 	adm := e.Group("api/admin")
 	// obj := e.Group("/obj")
