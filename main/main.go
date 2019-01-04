@@ -76,7 +76,8 @@ func login(c echo.Context) error {
 			cookie.Domain = ""
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
-	
+			
+			c.Redirect(302,"/")
 			return c.JSON(http.StatusOK, echo.Map{
 				"token": t,
 			})
@@ -132,9 +133,6 @@ func check(c echo.Context) error {
 	var data = []User{}
 	_ = json.Unmarshal(contents, &data)
 	
-
-
-
 
 
 	user := c.Get("user").(*jwt.Token)
