@@ -76,10 +76,10 @@ func login(c echo.Context) error {
 			cookie.Domain = ""
 			cookie.Expires = time.Now().Add(24 * time.Hour)
 			c.SetCookie(cookie)
-	
-			return c.JSON(http.StatusOK, echo.Map{
-				"token": t,
-			})
+			_ =  c.Redirect(http.StatusOK, "/")
+			// return c.JSON(http.StatusOK, echo.Map{
+			// 	"token": t,
+			// })
 		}
 	}
 	return echo.ErrUnauthorized
@@ -110,10 +110,10 @@ func testlogin(c echo.Context) error {
 	cookie.Domain = ""
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	c.SetCookie(cookie)
-
-	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
-	})
+	return c.Redirect(302, "/")
+	// return c.JSON(http.StatusOK, echo.Map{
+	// 	"token": t,
+	// })
 }
 
 func check(c echo.Context) error {
