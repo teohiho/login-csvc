@@ -158,6 +158,8 @@ func check(c echo.Context) error {
 			return c.JSON(http.StatusOK, echo.Map{
 				"status": "ok",
 				"role": value.IDRole,
+				"avatar": value.Avatar,
+				"id": value.ID,
 			})
 		}
 	}
